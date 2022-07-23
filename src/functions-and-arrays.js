@@ -46,7 +46,7 @@ function sum(numbers) {
 
     for (let num of numbers) {
         if (typeof num === 'object' || typeof num === 'array') {
-            throw Error("unsupported data type sir or ma'am");
+            throw new Error("unsupported data type sir or ma'am");
         }
         if (typeof num === 'string') {
             sum += num.length;
@@ -148,44 +148,61 @@ function howManyTimes(haystack, needle) {
 
 
 // Iteration #8: Bonus
-function greatestProduct(arr) {
-    if (!arr.length) {
-        return 0
-    }
-    let greatest = 1;
-    for (let row of arr) {
-        let maxInRow = 0;
-        for (let item of row) {
-            maxInRow = maxOfTwoNumbers(maxInRow, item)
-        }
-        greatest += maxInRow
-    }
-    return greatest
-}
-let matrix = [
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-    ];
-console.log(greatestProduct(matrix))
+function greatestProduct(matrix) {
+    let maxValue = 0;
 
+    for (let y = 0; y < matrix.length; y++) {
+        let up = -1;
+        let down = -1;
+        if (y > 0) {
+            up = y - 1;
+        }
+        if (y < matrix.length - 1) {
+            down = y + 1;
+        }
+
+        for (let x = 0; x < matrix[y].length; x++) {
+            let left = -1;
+            let right = -1;
+
+            if (x > 0) {
+                left = x - 1;
+            }
+            if (x < matrix[y].length - 1) {
+                right = x + 1;
+            }
+
+            maxValue = maxOfTwoNumbers(
+                maxValue,
+                crossMultiply(matrix, x, y, up, down, left, right)
+            )
+        }
+    }
+
+    return maxValue
+}
+
+function crossMultiply(matrix, x, y, up, down, left, right) {
+    let upVal = 1;
+    let downVal = 1;
+    let leftVal = 1;
+    let rightVal = 1;
+
+    if (up != -1) {
+        upVal = matrix[up][x];
+    }
+    if (down != -1) {
+        downVal = matrix[down][x];
+    }
+    if (left != -1) {
+        leftVal = matrix[y][left];
+    }
+    if (right != -1) {
+        rightVal = matrix[y][right];
+    }
+
+    return upVal * downVal * leftVal * rightVal;
+}
 
 
 // The following is required to make unit tests work.
